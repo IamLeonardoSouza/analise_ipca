@@ -1,25 +1,22 @@
-from data_extraction.extract_ipca import IPCAExtractor
-from data_processing.process_ipca import IPCAProcessor
-from visualization.generate_dashboard import IPCAVisualizer
+import os
+from src.collect_data import collect_data
+from src.process_data import process_data
+from notebooks.ipca_processing_notebook import collect_and_store_ipca
 
 def main():
-    print("🚀 Iniciando pipeline de análise do IPCA...")
+    # Etapa 1: Coletar os dados
+    print("Coletando os dados do IPCA...")
+    collect_data()
 
-    # Extração
-    extractor = IPCAExtractor()
-    extractor.fetch_data()
-    df = extractor.to_dataframe()
+    # Etapa 2: Processar os dados
+    print("Processando os dados do IPCA...")
+    process_data()
 
-    # Processamento
-    processor = IPCAProcessor()
-    df_spark = processor.process(df)
-    processor.save_to_delta(df_spark)
+    # Etapa 3: Armazenar em Delta Lake
+    print("Armazenando os dados em Delta Lake...")
+    collect_and_store_ipca()
 
-    # Visualização
-    visualizer = IPCAVisualizer(df)
-    visualizer.plot_ipca_trend()
-
-    print("✅ Pipeline concluído!")
+    print("Execução concluída!")
 
 if __name__ == "__main__":
     main()
