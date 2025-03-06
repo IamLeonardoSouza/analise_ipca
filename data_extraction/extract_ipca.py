@@ -5,7 +5,7 @@ from datetime import datetime
 
 class IPCAExtractor:
     # URL da API do Banco Central para IPCA
-    API_URL  = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.10844/dados?formato=json"
+    API_URL  = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.10844/dados?formato=json&dataInicial=01/01/1995&dataFinal=01/01/2025"
 
     def __init__(self):
         self.data = None
