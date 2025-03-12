@@ -1,19 +1,24 @@
 import requests
-import os
+import pandas as pd
+from loguru import logger
 
 def collect_data():
-    # URL da API do Banco Central
-    url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.10844/dados?formato=json&dataInicial=01/01/1995&dataFinal=01/01/2025"
-
-    # Fazer a requisição GET
-    response = requests.get(url)
-
-    # Garantir que o diretório de dados exista
-    if not os.path.exists("data"):
-        os.makedirs("data")
-
-    # Salvar os dados em um arquivo CSV
-    with open("data/ipca.csv", "wb") as file:
-        file.write(response.content)
-
-    print("Dados coletados com sucesso!")
+    # API URL
+    data_url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.10844/dados?formato=json&dataInicial=01/01/1995&dataFinal=01/01/2025"
+    
+    # API Request
+    response = requests.get(data_url)
+    data = response.json()
+    
+    # Create DataFrame
+    df = pd.DataFrame(data)
+    
+    # Convert the 'date' column to date format
+    # Convert the 'value' column to float
+    df['data'] = pd.to_datetime(df['data'], format='%d/%m/%Y')
+    df['valor'] = df['valor'].str.replace(',', '.').astype(float)
+    
+    # Save to an Excel file
+    df.to_excel(r"data\data_ipca.xlsx", index=False)
+    
+    logger.success("File saved successfully as 'data_ipca.xlsx'")
